@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:1.19
+    restart: always
+    volumes:
+      - ./config/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./src:/var/www/
+    networks:
+      - rede
+    ports:
+      - "${NGINX}:80"
+    depends_on:
+      - app
+  app:
+    build: 
+      context: ./
+      dockerfile: ./builds/php-fpm.Dockerfile
+    restart: always
+    networks: 
+      - rede
+    volumes: 
+      - ./src:/var/www/
+    depends_on: 
+      - mysql
+    links:
+      - mysql
+  mysql:
+    image: mysql:5.7.35
+    volumes: 
+      - db_data:/var/lib/mysql
+    restart: always
+    networks: 
+      - rede
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_USER: 'testuser'
+      MYSQL_PASSWORD: 'testpassword'
+  phpmyadmin:
+    image: phpmyadmin:5
+    restart: always
+    ports: 
+      - "${PHPMYADMIN}:80"
+    networks: 
+      - rede
+    depends_on: 
+      - mysql
+    environment:
+      PMA_HOST: "mysql"
+      PMA_USER: "root"
+      PMA_PASSWORD: "root"
+
+networks:
+  rede:
+
+volumes:
+  db_data:

@@ -1,0 +1,17 @@
+controllers:
+    resource: ../../src/Controller/
+    type: annotation
+
+core_context_api:
+    resource: ../../src/CoreContext/Infrastructure/Controller/
+    type: annotation
+    prefix: /api/v1/core
+
+crm_context_api:
+    resource: ../../src/CrmContext/Infrastructure/Controller/
+    type: annotation
+    prefix: /api/v1/crm
+
+kernel:
+    resource: ../../src/Kernel.php
+    type: annotation
